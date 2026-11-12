@@ -1,9 +1,9 @@
 {
   "id": "neodex.motion",
   "name": "Motion",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "NDesumeur",
-  "description": "Règle tes courbes d'animation et vois-les bouger : courbe de Bézier à deux poignées (10 préréglages, et les tiens) ou ressort réglé par la masse, la raideur et l'amortissement. Compare 3 courbes côte à côte sur un déplacement, un agrandissement, une rotation et un fondu, puis copie le CSS prêt à l'emploi (cubic-bezier, linear() pour le ressort, @keyframes).",
+  "description": "L'animateur : formes, textes et images animés par images clés sur une timeline (position, échelle, rotation, opacité, flou, couleur), 12 effets tout prêts, accélérations réglables, export en vidéo WebM, en HTML/CSS ou en PNG. Et l'éditeur de courbes : Bézier ou ressort, comparées côte à côte, CSS prêt à copier.",
   "icon": "icon.png",
   "entry": "index.js",
   "view": "motion",

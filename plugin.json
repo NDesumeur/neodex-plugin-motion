@@ -1,0 +1,27 @@
+{
+  "id": "neodex.motion",
+  "name": "Motion",
+  "version": "1.0.0",
+  "author": "NDesumeur",
+  "description": "Règle tes courbes d'animation et vois-les bouger : courbe de Bézier à deux poignées (10 préréglages, et les tiens) ou ressort réglé par la masse, la raideur et l'amortissement. Compare 3 courbes côte à côte sur un déplacement, un agrandissement, une rotation et un fondu, puis copie le CSS prêt à l'emploi (cubic-bezier, linear() pour le ressort, @keyframes).",
+  "icon": "icon.png",
+  "entry": "index.js",
+  "view": "motion",
+  "neobase": ">=4.0.0",
+  "type": "app",
+  "category": "Outils",
+  "mobile": true,
+  "compatibility": [
+    "windows",
+    "android",
+    "linux"
+  ],
+  "syncMode": "fusion",
+  "syncInfo": "Les 3 courbes, la durée et tes préréglages gardés.",
+  "system": false,
+  "dependencies": {},
+  "sdk": "2.1.0",
+  "permissions": [
+    "storage"
+  ]
+}

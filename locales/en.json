@@ -41,7 +41,6 @@
  "▶ Rejouer": "▶ Replay",
  "★ Garder": "★ Keep",
  "⟳ En boucle": "⟳ Looping",
- "L'animateur : formes, textes et images animés par images clés sur une timeline (position, échelle, rotation, opacité, flou, couleur), 12 effets tout prêts, accélérations réglables, export en vidéo WebM, en HTML/CSS ou en PNG. Et l'éditeur de courbes : Bézier ou ressort, comparées côte à côte, CSS prêt à copier.": "The animator: shapes, texts and images animated with keyframes on a timeline (position, scale, rotation, opacity, blur, color), 12 ready-made effects, adjustable easing, export as WebM video, HTML/CSS or PNG. And the curve editor: Bézier or spring, compared side by side, CSS ready to copy.",
  "Saut": "Jump",
  "Échelle": "Scale",
  "Opacité": "Opacity",
@@ -116,5 +115,6 @@
  "Backspace": "Backspace",
  "Arrow": "Arrow",
  "animer : images clés, accélérations, couleur, effet, glisser, HTML, vidéo": "animate: keyframes, easing, color, effect, drag, HTML, video",
- "ko ; courbes : préréglage, poignée, ressort ok": "KB; curves: preset, handle, spring ok"
+ "ko ; courbes : préréglage, poignée, ressort ok": "KB; curves: preset, handle, spring ok",
+ "L'animateur : formes, textes et images animés par images clés sur une timeline (position, échelle, rotation, opacité, flou, couleur), 12 effets tout prêts, accélérations réglables, export en vidéo WebM, en HTML/CSS ou en PNG. Et l'éditeur de courbes : Bézier ou ressort, comparées côte à côte, CSS prêt à copier. Timeline plus grande (rangées, règle, noms et images clés plus faciles à viser), textes plus grands, et la scène grandit avec l'écran tout en laissant voir la timeline.": "The animator: shapes, texts and images animated with keyframes on a timeline (position, scale, rotation, opacity, blur, color), 12 ready-made effects, adjustable easing, export as WebM video, HTML/CSS or PNG. And the curve editor: Bézier or spring, compared side by side, CSS ready to copy. Bigger timeline (rows, ruler, names and keyframes easier to hit), bigger text, and the stage grows with the screen while keeping the timeline in view."
 }

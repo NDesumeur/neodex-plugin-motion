@@ -37,3 +37,5 @@ Prêt à copier : une `transition` et une `@keyframes` avec la courbe. Bézier d
 ## Données
 
 L'animation, ses images, les 3 courbes, la durée et tes préréglages sont gardés dans le dossier du plugin. Autorisation : `storage` seulement.
+
+

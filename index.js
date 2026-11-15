@@ -1,23 +1,23 @@
 // Motion : régler une courbe d'animation et la voir bouger. Courbe de Bézier à deux poignées ou ressort (masse, raideur, amortissement),
 // 3 courbes comparées côte à côte, aperçu sur 4 propriétés, et le CSS prêt à copier (cubic-bezier, linear() pour le ressort, @keyframes).
 const CSS = `
-.moGrid{display:grid;grid-template-columns:340px minmax(0,1fr);gap:14px}
+.moGrid{display:grid;grid-template-columns:clamp(340px,26vw,440px) minmax(0,1fr);gap:16px}
 @media (max-width:900px){.moGrid{grid-template-columns:minmax(0,1fr)}.moGrid>:last-child{order:-1}}
-.moCan{width:100%;max-width:340px;aspect-ratio:1;display:block;image-rendering:pixelated;background:#0b0816;border:2px solid var(--line);touch-action:none}
+.moCan{width:100%;max-width:440px;aspect-ratio:1;display:block;image-rendering:pixelated;background:#0b0816;border:2px solid var(--line);touch-action:none}
 .moRow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0}
 .moRow .btn{width:auto;margin:0}
 .moRow .f{width:auto;flex:1;min-width:0;margin:0}
 .moRange{-webkit-appearance:none;appearance:none;height:10px;background:var(--bg0);border:2px solid var(--line);outline:none;flex:1;min-width:80px}
 .moRange::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:22px;background:var(--magenta);border:2px solid #000;cursor:var(--cp,pointer)}
-.moStage{position:relative;height:290px;background:#0b0816;border:2px solid var(--line);overflow:hidden}
+.moStage{position:relative;height:clamp(290px,32vh,420px);background:#0b0816;border:2px solid var(--line);overflow:hidden}
 .moLane{position:absolute;left:0;right:0;height:56px;border-bottom:1px dashed #241c40}
 .moBox{position:absolute;left:14px;top:14px;width:28px;height:28px;border:2px solid #000}
-.moCode{font:12px monospace;background:var(--bg0);border:2px solid var(--line);padding:8px;white-space:pre-wrap;word-break:break-all;color:var(--lilac);margin:6px 0}
+.moCode{font:14px monospace;background:var(--bg0);border:2px solid var(--line);padding:8px;white-space:pre-wrap;word-break:break-all;color:var(--lilac);margin:6px 0}
 .moTabs{display:flex;gap:6px;margin-bottom:8px}
 .moTabs .btn{width:auto;margin:0}
 .moCurve{display:flex;gap:6px;align-items:center;margin:4px 0}
 .moCurve i{width:14px;height:14px;border:2px solid #000;flex:none}
-.moCurve .btn{width:auto;margin:0;flex:1;text-align:left;padding:4px 10px}
+.moCurve .btn{width:auto;margin:0;flex:1;text-align:left;padding:6px 10px;font-size:15px}
 `;
 const COLORS = ['#ff4fb0', '#4fc3ff', '#ffd34f'];
 const PRESETS = {linear: [0, 0, 1, 1], ease: [.25, .1, .25, 1], 'ease-in': [.42, 0, 1, 1], 'ease-out': [0, 0, .58, 1], 'ease-in-out': [.42, 0, .58, 1],
@@ -40,19 +40,20 @@ function spring({mass, stiffness, damping, velocity}) {
 const r3 = v => +v.toFixed(3);
 // ---------- le mode Animer : des calques (formes, textes, images) animés par images clés sur une timeline ----------
 const ANIM_CSS = `
-.maGrid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px}
+.maGrid{display:grid;grid-template-columns:minmax(0,1fr) clamp(300px,23vw,400px);gap:16px}
 @media (max-width:980px){.maGrid{grid-template-columns:minmax(0,1fr)}}
 .maStage{width:100%;display:block;background:#000;border:2px solid var(--line);touch-action:none;margin:0 auto}
 .maTl{width:100%;display:block;background:#0b0816;border:2px solid var(--line);touch-action:none;margin-top:6px}
 .maSide{display:flex;flex-direction:column;gap:10px}
 .maLayer{display:flex;gap:4px;align-items:center;margin:3px 0}
-.maLayer .btn{width:auto;margin:0;padding:3px 8px}
+.maLayer .btn{width:auto;margin:0;padding:5px 9px;font-size:15px}
 .maLayer .nm{flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.maProp{display:grid;grid-template-columns:86px minmax(0,1fr) 34px;gap:4px;align-items:center;margin:3px 0}
+.maProp{display:grid;grid-template-columns:110px minmax(0,1fr) 38px;gap:5px;align-items:center;margin:4px 0;font-size:15px}
 .maProp .f{margin:0;width:100%;min-width:0}
-.maProp .btn{margin:0;width:34px;padding:2px 0}
-.maProp input[type=color]{height:26px;padding:0}
+.maProp .btn{margin:0;width:38px;padding:4px 0}
+.maProp input[type=color]{height:30px;padding:0}
 .maKey{color:var(--magenta)}
+.maSide .hint,.maProp>span,.maTime{font-size:15px}.maTime{font-family:monospace;white-space:nowrap;margin:0 6px}
 `;
 const EASES = ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out', 'Retour (back-out)', 'Élan (back-in)', 'Rapide (expo-out)', 'Doux (sine-in-out)', 'Brusque (quart-in)', 'Courbe rose', 'Courbe bleue', 'Courbe jaune', 'Saut'];
 const PROPS = [{k: 'x', t: 'X', s: 1}, {k: 'y', t: 'Y', s: 1}, {k: 'scale', t: 'Échelle', s: .05}, {k: 'rot', t: 'Rotation °', s: 5}, {k: 'op', t: 'Opacité', s: .05}, {k: 'blur', t: 'Flou', s: .5}, {k: 'col', t: 'Couleur', color: true}];
@@ -99,7 +100,7 @@ async function animator(ctx, {el, toast, st, fnOf, save}) {
   }
   // ---------- le dessin d'une image ----------
   const stage = el('canvas', 'maStage'), sg = stage.getContext('2d');
-  function sizeStage() { const [w, h] = FORMATS[scene.fmt]; stage.width = w * 2; stage.height = h * 2; stage.style.maxWidth = (scene.fmt === '9:16' ? 300 : scene.fmt === '1:1' ? 420 : 760) + 'px'; }
+  function sizeStage() { const [w, h] = FORMATS[scene.fmt]; stage.width = w * 2; stage.height = h * 2; stage.style.maxWidth = `min(${scene.fmt === '9:16' ? 420 : scene.fmt === '1:1' ? 640 : 1100}px, calc((100vh - 430px) * ${w / h}), 100%)`; stage.style.minWidth = 'min(100%, ' + (scene.fmt === '9:16' ? 180 : 320) + 'px)'; }
   function drawLayer(g, L, t) {
     const x = v(L, 'x', t), y = v(L, 'y', t), sc = v(L, 'scale', t), rot = v(L, 'rot', t), op = v(L, 'op', t), bl = v(L, 'blur', t);
     g.save(); g.translate(x, y); g.rotate(rot * Math.PI / 180); g.scale(sc, sc); g.globalAlpha = Math.max(0, Math.min(1, op)); g.filter = bl > 0 ? `blur(${bl}px)` : 'none';
@@ -143,27 +144,27 @@ async function animator(ctx, {el, toast, st, fnOf, save}) {
     setVal(drag.L, 'x', Math.round(drag.ox + x - drag.x)); setVal(drag.L, 'y', Math.round(drag.oy + y - drag.y)); render(); drawTl(); };
   stage.onpointerup = () => { if (drag?.moved) changed(); drag = null; };
   // ---------- la timeline ----------
-  const tl = el('canvas', 'maTl'), tg = tl.getContext('2d'), LAB = 104, RUL = 18;
+  const tl = el('canvas', 'maTl'), tg = tl.getContext('2d'), LAB = 160, RUL = 28, RH = 30, PH = 24;  // largeur des étiquettes, hauteur de la règle, d'une rangée de calque, d'une rangée de propriété
   let rows = [];
   const tx = t => LAB + t / scene.dur * (tl.width - LAB - 10), xt = x => Math.max(0, Math.min(scene.dur, (x - LAB) / (tl.width - LAB - 10) * scene.dur));
   function drawTl() {
     const W = Math.max(300, tl.clientWidth || 600); rows = []; let y = RUL;
-    for (const L of [...scene.layers].reverse()) { rows.push({L, y, h: 20}); y += 20; if (L.id === sel) for (const P of PROPS) { rows.push({L, k: P.k, t: P.t, y, h: 15}); y += 15; } }
-    const H = Math.max(y + 6, 60); if (tl.width !== W) tl.width = W; if (tl.height !== H) tl.height = H;
-    const g = tg; g.fillStyle = '#0b0816'; g.fillRect(0, 0, W, H); g.font = '10px monospace'; g.textBaseline = 'middle';
+    for (const L of [...scene.layers].reverse()) { rows.push({L, y, h: RH}); y += RH; if (L.id === sel) for (const P of PROPS) { rows.push({L, k: P.k, t: P.t, y, h: PH}); y += PH; } }
+    const H = Math.max(y + 8, 90); if (tl.width !== W) tl.width = W; if (tl.height !== H) tl.height = H;
+    const g = tg; g.fillStyle = '#0b0816'; g.fillRect(0, 0, W, H); g.font = '14px monospace'; g.textBaseline = 'middle';
     g.fillStyle = '#1a1430'; g.fillRect(0, 0, W, RUL);
     const step = scene.dur > 12000 ? 2000 : scene.dur > 5000 ? 1000 : scene.dur > 2000 ? 500 : 250;
-    for (let t = 0; t <= scene.dur + 1; t += step / 5) { const x = Math.round(tx(t)), big = Math.abs(t / step - Math.round(t / step)) < 1e-6; g.fillStyle = big ? '#6a5a98' : '#3a2f5a'; g.fillRect(x, big ? 4 : 11, 1, big ? 14 : 7); if (big) { g.fillStyle = '#c8b8f0'; g.fillText((t / 1000).toFixed(t % 1000 ? 2 : 0) + 's', x + 3, 8); } }
+    for (let t = 0; t <= scene.dur + 1; t += step / 5) { const x = Math.round(tx(t)), big = Math.abs(t / step - Math.round(t / step)) < 1e-6; g.fillStyle = big ? '#6a5a98' : '#3a2f5a'; g.fillRect(x, big ? 6 : 17, 1, big ? 22 : 11); if (big) { g.fillStyle = '#c8b8f0'; g.fillText((t / 1000).toFixed(t % 1000 ? 2 : 0) + 's', x + 4, 11); } }
     for (const r of rows) {
       const isSel = r.L.id === sel;
       g.fillStyle = r.k ? '#120e22' : isSel ? '#2a1f4a' : '#16122a'; g.fillRect(0, r.y, W, r.h - 1);
-      g.fillStyle = r.k ? '#8a7aa8' : '#e8e0ff'; g.fillText(r.k ? '  ' + r.t : (r.L.hidden ? '◌ ' : '● ') + r.L.name.slice(0, 13), 4, r.y + r.h / 2);
+      g.font = r.k ? '13px monospace' : '15px monospace'; g.fillStyle = r.k ? '#8a7aa8' : '#e8e0ff'; g.fillText(r.k ? '  ' + r.t : (r.L.hidden ? '◌ ' : '● ') + r.L.name.slice(0, 16), 6, r.y + r.h / 2);
       const ks = r.k ? (r.L.keys[r.k] || []) : [...new Set(Object.values(r.L.keys).flat().map(q => q.t))].map(t => ({t}));
-      for (const q of ks) { const x = Math.round(tx(q.t)), cy = r.y + r.h / 2, s = r.k ? 4 : 5, on = selKeys?.L === r.L && (r.k ? selKeys.keys.includes(q) : selKeys.t === q.t && !selKeys.k);
+      for (const q of ks) { const x = Math.round(tx(q.t)), cy = r.y + r.h / 2, s = r.k ? 6 : 8, on = selKeys?.L === r.L && (r.k ? selKeys.keys.includes(q) : selKeys.t === q.t && !selKeys.k);
         g.fillStyle = '#000'; g.beginPath(); g.moveTo(x, cy - s - 1); g.lineTo(x + s + 1, cy); g.lineTo(x, cy + s + 1); g.lineTo(x - s - 1, cy); g.fill();
         g.fillStyle = on ? '#ffffff' : r.k ? '#ffd34f' : '#ff4fb0'; g.beginPath(); g.moveTo(x, cy - s); g.lineTo(x + s, cy); g.lineTo(x, cy + s); g.lineTo(x - s, cy); g.fill(); }
     }
-    const px = Math.round(tx(T)); g.fillStyle = '#ff4a4a'; g.fillRect(px, 0, 2, H); g.fillRect(px - 4, 0, 10, 6);
+    const px = Math.round(tx(T)); g.fillStyle = '#ff4a4a'; g.fillRect(px - 1, 0, 3, H); g.fillRect(px - 6, 0, 15, 9);
   }
   let tdrag = null;
   tl.onpointerdown = e => {
@@ -172,8 +173,8 @@ async function animator(ctx, {el, toast, st, fnOf, save}) {
     if (y < RUL) { tdrag = {scrub: true}; seek(xt(x)); return; }
     const r = rows.find(r => y >= r.y && y < r.y + r.h); if (!r) return;
     if (sel !== r.L.id) { sel = r.L.id; selKeys = null; side(); }
-    if (x < LAB) { if (!r.k && x < 14) { snap(); r.L.hidden = !r.L.hidden; changed(); } else { render(); drawTl(); } return; }
-    const keys = r.k ? (r.L.keys[r.k] || []) : Object.values(r.L.keys).flat(), q = keys.map(q => [q, Math.abs(tx(q.t) - x)]).filter(([, d]) => d < 7).sort((a, b) => a[1] - b[1])[0]?.[0];
+    if (x < LAB) { if (!r.k && x < 20) { snap(); r.L.hidden = !r.L.hidden; changed(); } else { render(); drawTl(); } return; }
+    const keys = r.k ? (r.L.keys[r.k] || []) : Object.values(r.L.keys).flat(), q = keys.map(q => [q, Math.abs(tx(q.t) - x)]).filter(([, d]) => d < 10).sort((a, b) => a[1] - b[1])[0]?.[0];
     if (q) { selKeys = r.k ? {L: r.L, k: r.k, keys: [q]} : {L: r.L, t: q.t, keys: keys.filter(k => k.t === q.t)}; tdrag = {keys: selKeys.keys, x, t0: q.t, moved: false}; seek(q.t); side(); }
     else { selKeys = null; seek(xt(x)); tdrag = {scrub: true}; side(); }
   };
@@ -186,7 +187,7 @@ async function animator(ctx, {el, toast, st, fnOf, save}) {
   };
   tl.onpointerup = () => { if (tdrag?.moved) changed(); tdrag = null; };
   // ---------- lecture ----------
-  const timeL = el('span', 'hint'), playB = el('button', 'btn px main', '▶');
+  const timeL = el('span', 'hint maTime'), playB = el('button', 'btn px main', '▶');
   const fmtT = t => (t / 1000).toFixed(2).replace('.', ',') + ' s';
   function seek(t) { T = Math.max(0, Math.min(scene.dur, t)); timeL.textContent = fmtT(T) + ' / ' + fmtT(scene.dur); render(); drawTl(); if (!playing) syncProps(); }
   function tick(now) { if (!view0.isConnected) return; let t = now - p0; if (t >= scene.dur) { if (scene.loop && !exporting) { p0 = now; t = 0; } else { t = scene.dur; playing = false; playB.textContent = '▶'; } } seek(t); if (playing) raf = requestAnimationFrame(tick); else syncProps(); }
@@ -356,7 +357,7 @@ export default async function (ctx) {
   const fnOf = c => c.kind === 'spring' ? spring(c.spring).fn : bezier(c.pts);
   // ---------- l'interface ----------
   view.innerHTML = '';
-  const wrap = el('div', 'appWrap'), head = el('div', 'agHead'), lay = el('div', 'moGrid'), left = el('div', 'sysCard px'), right = el('div');
+  const wrap = el('div', 'appWrap wide'), head = el('div', 'agHead'), lay = el('div', 'moGrid'), left = el('div', 'sysCard px'), right = el('div');
   head.append(el('span', 'label', 'Motion · courbes d\'animation')); lay.append(left, right); wrap.append(head, lay); view.append(wrap);
   const curveList = el('div'), tabs = el('div', 'moTabs'), can = el('canvas', 'moCan'), g = can.getContext('2d'), editor = el('div');
   can.width = 340; can.height = 340; can.id = 'mo_canvas';
@@ -448,7 +449,7 @@ export default async function (ctx) {
   function full() { drawList(); makeBoxes(); update(); }
   durL.textContent = st.dur + ' ms'; drawLoop(); full(); replay();
   // les deux modes : Animer (calques et images clés) et Courbes (l'éditeur ci-dessus, dont les courbes servent aussi d'accélérations)
-  const anim = await animator(ctx, {el, toast, st, fnOf, save}), aw = el('div', 'appWrap'), modes = el('div', 'moTabs');
+  const anim = await animator(ctx, {el, toast, st, fnOf, save}), aw = el('div', 'appWrap wide'), modes = el('div', 'moTabs');
   aw.append(anim.root);
   const mb = [['anim', '🎬 Animer'], ['curves', '〰 Courbes']].map(([k, t]) => { const b = el('button', 'btn px', t); b.dataset.mode = k; b.onclick = () => setMode(k); return b; });
   function setMode(k) { st.mode = k; aw.style.display = k === 'anim' ? '' : 'none'; wrap.style.display = k === 'curves' ? '' : 'none'; mb.forEach(b => b.classList.toggle('main', b.dataset.mode === k)); if (k === 'anim') anim.refresh(); save(); }

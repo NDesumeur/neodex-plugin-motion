@@ -37,3 +37,5 @@ Ready to copy: a `transition` and a `@keyframes` with the curve. Bézier gives `
 ## Data
 
 The animation, its images, the 3 curves, the duration and your presets are kept in the plugin folder. Permission: `storage` only.
+
+

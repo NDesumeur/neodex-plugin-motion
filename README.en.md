@@ -6,6 +6,10 @@ Animate shapes, text and images with keyframes, then export as a video or as HTM
 
 ![Motion](screenshots/1.jpg)
 
+## Lottie export (new in 1.2.0)
+
+"Lottie .json" button: the animation as a Lottie file for lottie-web, Android and iOS, with every easing (springs included).
+
 ## Animate
 
 - **Layers**: rectangle, circle, triangle, star, text (6 fonts, several lines, outline) and images (🖼 button or drop a file). ▲ ▼ for the order, duplicate, delete, ● in the timeline to hide a layer.
@@ -15,7 +19,7 @@ Animate shapes, text and images with keyframes, then export as a video or as HTM
 - **Easing** of each key: the 10 presets, your 3 curves from the Curves mode (Bézier or spring), or "Jump".
 - **12 ready-made effects**: fade in, fade out, enter from the left or the right, drop with a bounce, pop, pulse, shake, full turn, blur to sharp, colour change, float.
 - **Scene**: landscape 16:9, portrait 9:16 or square, background colour, length from 0.5 to 30 s, looping or once.
-- **Export**: **WebM** video at 1280×720 (or 720×1280, 960×960), **HTML + CSS** to copy or a full **.html** page (images included), **PNG** image of the current time.
+- **Export**: **WebM** video at 1280×720 (or 720×1280, 960×960), **HTML + CSS** to copy or a full **.html** page (images included), a **Lottie .json** file (for lottie-web, Android and iOS: every easing is kept, blur is not), **PNG** image of the current time.
 - Space: play · Delete: erase · arrows: move (Shift: ×10) · Ctrl+Z / Ctrl+Y: undo / redo.
 
 ## Curves: three curves to compare

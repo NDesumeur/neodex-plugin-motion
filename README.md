@@ -6,6 +6,10 @@ Anime des formes, des textes et des images avec des images clés, puis exporte e
 
 ![Motion](screenshots/1.jpg)
 
+## Export Lottie (nouveau en 1.2.0)
+
+Bouton « Lottie .json » : l'animation en fichier Lottie pour lottie-web, Android et iOS, avec toutes les accélérations (ressorts compris).
+
 ## Animer
 
 - **Calques** : rectangle, cercle, triangle, étoile, texte (6 polices, plusieurs lignes, contour) et images (bouton 🖼 ou glisser un fichier). ▲ ▼ pour l'ordre, dupliquer, supprimer, ● dans la timeline pour cacher un calque.
@@ -15,7 +19,7 @@ Anime des formes, des textes et des images avec des images clés, puis exporte e
 - **Accélération** de chaque clé : les 10 préréglages, tes 3 courbes du mode Courbes (Bézier ou ressort), ou « Saut ».
 - **12 effets tout prêts** : apparition, disparition, entrée par la gauche ou la droite, chute avec rebond, surgir, pulsation, secousse, tour complet, flou vers net, changement de couleur, flottement.
 - **Scène** : paysage 16:9, portrait 9:16 ou carré, couleur du fond, durée de 0,5 à 30 s, en boucle ou une fois.
-- **Export** : vidéo **WebM** en 1280×720 (ou 720×1280, 960×960), **HTML + CSS** à copier ou page **.html** complète (images comprises), **image PNG** de l'instant présent.
+- **Export** : vidéo **WebM** en 1280×720 (ou 720×1280, 960×960), **HTML + CSS** à copier ou page **.html** complète (images comprises), fichier **Lottie .json** (pour lottie-web, Android et iOS : chaque accélération est gardée, le flou ne passe pas), **image PNG** de l'instant présent.
 - Espace : lecture · Suppr : effacer · flèches : déplacer (Maj : ×10) · Ctrl+Z / Ctrl+Y : annuler / refaire.
 
 ## Courbes : trois courbes à comparer

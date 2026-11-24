@@ -16,6 +16,10 @@ module.exports = async ({ pj, sleep }) => {
     const n = sc.layers.length, id = L.id; mo.undo(); if (sc.layers.length !== n) return {err: 'annuler a retiré un calque'};
     L = sc.layers.find(x => x.id === id); if ((L.keys.scale || []).length) return {err: 'annuler : la pulsation est restée'};
     const html = mo.htmlOut(); if (!html.includes('@keyframes mo-4') || !html.includes('50% { transform: translate(')) return {err: 'HTML : ' + html.slice(0, 200)};
+    // Lottie : un calque par calque visible plus le fond, 30 images/s, et la position relevée égale à celle de la scène
+    const lo = JSON.parse(JSON.stringify(mo.lottieOut())), lx = lo.layers.find(x => x.nm === L.name);
+    if (lo.layers.length !== sc.layers.filter(x => !x.hidden).length + 1 || lo.op !== Math.round(sc.dur / 1000 * 30) || !lx || lx.ks.p.a !== 1) return {err: 'Lottie : ' + JSON.stringify(lo).slice(0, 300)};
+    const k15 = lx.ks.p.k[15]; if (Math.abs(k15.s[0] - mo.valAt(L, 'x', 500)) > .1 || lx.shapes[0].it[1].c.a !== 1) return {err: 'Lottie position : ' + JSON.stringify(k15)};
     // un clic sur le carré dans la scène le choisit, un glissé le déplace
     const st = document.querySelector('.maStage'), r = st.getBoundingClientRect(), k = r.width / 640; mo.seek(0); const x0 = mo.valAt(L, 'x', 0), y0 = mo.valAt(L, 'y', 0);
     const P = (x, y) => ({clientX: r.left + x * k, clientY: r.top + y * k, bubbles: true, pointerId: 3});

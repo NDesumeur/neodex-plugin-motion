@@ -286,6 +286,34 @@ async function animator(ctx, {el, toast, st, fnOf, save}) {
     });
     return `<style>\n.mo-scene { position: relative; width: ${w}px; height: ${h}px; background: ${scene.bg}; overflow: hidden; }\n.mo-scene img { background: none !important; }\n${css.join('\n')}\n</style>\n<div class="mo-scene">\n${divs.join('\n')}\n</div>\n`;
   }
+  // Lottie (le JSON de Bodymovin, lu par lottie-web, Android, iOS) : chaque propriété animée est relevée à 30 images/s en images clés linéaires,
+  // pour garder exactement toutes les accélérations (ressorts compris). Le flou n'existe pas dans Lottie ; la couleur d'un texte reste celle du début.
+  function lottieOut() {
+    const [w, h] = FORMATS[scene.fmt], fr = 30, op = Math.max(1, Math.round(scene.dur / 1000 * fr)), rgb = c => [...hex2(c).map(x => r3(x / 255)), 1];
+    const prop = (L, k, f) => { if (!L.keys[k]?.length) return {a: 0, k: f(L.base[k])};
+      const kf = []; for (let i = 0; i <= op; i++) kf.push({t: i, s: [f(v(L, k, Math.min(scene.dur, i * 1000 / fr)))].flat(), ...(i < op ? {i: {x: [1], y: [1]}, o: {x: [0], y: [0]}} : {})}); return {a: 1, k: kf}; };
+    const xy = L => L.keys.x?.length || L.keys.y?.length ? {a: 1, k: Array.from({length: op + 1}, (_, i) => { const t = Math.min(scene.dur, i * 1000 / fr); return {t: i, s: [r1(v(L, 'x', t)), r1(v(L, 'y', t)), 0], ...(i < op ? {i: {x: [1], y: [1]}, o: {x: [0], y: [0]}} : {})}; })} : {a: 0, k: [L.base.x, L.base.y, 0]};
+    const assets = [], fonts = new Set(), layers = [];
+    const ks = (L, anchor = [0, 0], sx = 1, sy = 1) => ({o: prop(L, 'op', q => r1(Math.max(0, Math.min(1, q)) * 100)), r: prop(L, 'rot', r1), p: xy(L), a: {a: 0, k: [...anchor, 0]}, s: prop(L, 'scale', q => [r1(q * 100 * sx), r1(q * 100 * sy), 100])});
+    scene.layers.forEach((L, i) => {
+      if (L.hidden) return; const base = {ddd: 0, ind: i + 2, nm: L.name, sr: 1, ip: 0, op, st: 0, bm: 0};
+      if (L.type === 'text') { fonts.add(L.font);
+        layers.push({...base, ty: 5, ks: ks(L, [0, (String(L.text).split('\n').length - 1) * L.size * .6 - L.size * .35]), t: {d: {k: [{s: {s: L.size, f: L.font, t: String(L.text).replace(/\n/g, '\r'), j: 2, tr: 0, lh: L.size * 1.2, ls: 0, fc: rgb(L.base.col).slice(0, 3), ...(L.sw ? {sc: rgb(L.stroke).slice(0, 3), sw: L.sw, of: false} : {})}, t: 0}]}, p: {}, m: {g: 1, a: {a: 0, k: [0, 0]}}, a: []}}); return; }
+      if (L.type === 'image') { const im = imgs.get(L.img), iw = im?.naturalWidth || L.w, ih = im?.naturalHeight || L.h, id = 'img_' + i;
+        assets.push({id, w: iw, h: ih, u: '', p: im?.src || '', e: 1}); layers.push({...base, ty: 2, refId: id, ks: ks(L, [iw / 2, ih / 2], L.w / iw, L.h / ih)}); return; }
+      const hw = L.w / 2, hh = L.h / 2, n = L.type === 'star' ? 10 : 3;
+      const geo = L.type === 'rect' ? {ty: 'rc', d: 1, p: {a: 0, k: [0, 0]}, s: {a: 0, k: [L.w, L.h]}, r: {a: 0, k: Math.max(0, Math.min(L.r, hw, hh))}}
+        : L.type === 'circle' ? {ty: 'el', d: 1, p: {a: 0, k: [0, 0]}, s: {a: 0, k: [L.w, L.h]}}
+        : {ty: 'sh', ks: {a: 0, k: {c: true, v: Array.from({length: n}, (_, j) => { const a = -Math.PI / 2 + j * 2 * Math.PI / n, rr = L.type === 'star' && j % 2 ? .45 : 1; return [r1(Math.cos(a) * hw * rr), r1(Math.sin(a) * hh * rr)]; }), i: Array(n).fill([0, 0]), o: Array(n).fill([0, 0])}}};
+      const it = [geo, {ty: 'fl', c: prop(L, 'col', rgb), o: {a: 0, k: 100}, r: 1}];
+      if (L.sw) it.push({ty: 'st', c: {a: 0, k: rgb(L.stroke)}, o: {a: 0, k: 100}, w: {a: 0, k: L.sw}, lc: 2, lj: 2});
+      it.push({ty: 'tr', p: {a: 0, k: [0, 0]}, a: {a: 0, k: [0, 0]}, s: {a: 0, k: [100, 100]}, r: {a: 0, k: 0}, o: {a: 0, k: 100}});
+      layers.push({...base, ty: 4, ks: ks(L), shapes: [{ty: 'gr', nm: L.name, it}]});
+    });
+    layers.reverse();  // dans Lottie, le premier calque est dessiné par-dessus
+    layers.push({ddd: 0, ind: 1, ty: 1, nm: 'Fond', sr: 1, ip: 0, op, st: 0, bm: 0, sc: scene.bg, sw: w, sh: h, ks: {o: {a: 0, k: 100}, r: {a: 0, k: 0}, p: {a: 0, k: [w / 2, h / 2, 0]}, a: {a: 0, k: [w / 2, h / 2, 0]}, s: {a: 0, k: [100, 100, 100]}}});
+    return {v: '5.7.4', fr, ip: 0, op, w, h, nm: 'Motion', ddd: 0, assets, fonts: {list: [...fonts].map(f => ({fName: f, fFamily: f, fStyle: 'Bold', ascent: 75}))}, layers, markers: []};
+  }
   const dl = (blob, name) => { const a = el('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
   async function exportVideo(download = true) {
     if (typeof MediaRecorder === 'undefined') { toast('Export impossible : pas d\'enregistreur vidéo ici.'); return null; }
@@ -308,6 +336,7 @@ async function animator(ctx, {el, toast, st, fnOf, save}) {
     expBox.replaceChildren(el('span', 'label', 'Scène et export'), row(fmt), row(el('span', 'hint', 'Fond'), bg, el('span', 'hint', 'Durée (s)'), du), row(lp), vid,
       row(btn('Copier HTML + CSS', () => navigator.clipboard.writeText(htmlOut()).then(() => toast('HTML et CSS copiés'), () => toast('Copie impossible'))),
         btn('Page .html', () => dl(new Blob([`<!doctype html><meta charset="utf-8"><title>Animation</title><body style="margin:0;display:grid;place-items:center;min-height:100vh;background:#111">\n${htmlOut(true)}`], {type: 'text/html'}), 'animation.html')),
+        btn('Lottie .json', () => { dl(new Blob([JSON.stringify(lottieOut())], {type: 'application/json'}), 'animation.json'); toast('Lottie enregistré : lis-le avec lottie-web, Android ou iOS'); }),
         btn('Image PNG', () => { const was = exporting; exporting = true; render(); stage.toBlob(b => dl(b, 'image-' + Math.round(T) + 'ms.png')); exporting = was; render(); })));
   }
   function side() { drawLayers(); drawProps(); drawKey(); }
@@ -331,7 +360,7 @@ async function animator(ctx, {el, toast, st, fnOf, save}) {
   view0.addEventListener('drop', async e => { e.preventDefault(); for (const f of e.dataTransfer?.files || []) if (/^image\//.test(f.type)) await addImage(f); });
   sizeStage(); side(); drawFx(); drawExp();
   new ResizeObserver(() => drawTl()).observe(tl);
-  view0.__mo = {scene, newLayer, addImage, seek, play, v, valAt: (L, k, t) => v(L, k, t), htmlOut, exportVideo, fx: FX, get sel() { return SL(); }, setVal: (L, k, x) => { setVal(L, k, x); changed(); }, undo: () => restore(hist, redo), render};
+  view0.__mo = {scene, newLayer, addImage, seek, play, v, valAt: (L, k, t) => v(L, k, t), htmlOut, lottieOut, exportVideo, fx: FX, get sel() { return SL(); }, setVal: (L, k, x) => { setVal(L, k, x); changed(); }, undo: () => restore(hist, redo), render};
   if (!scene.layers.length) {  // une première scène pour voir tout de suite comment ça marche
     autokey = false; const t = newLayer('text', {text: 'Motion', size: 64}); T = 0; FX['Chute avec rebond'](t);
     const s = newLayer('star', {w: 70, h: 70}); s.base.x = 150; s.base.y = 250; T = 800; FX['Surgir (zoom)'](s); T = 1400; FX['Tour complet'](s);

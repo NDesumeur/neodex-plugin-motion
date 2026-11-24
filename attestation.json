@@ -1,9 +1,9 @@
 {
   "pluginId": "neodex.motion",
   "repo": "NDesumeur/neodex-plugin-motion",
-  "version": "1.1.1",
-  "sha256": "495528b81907923c427c233483c8a9d984d84adbbae0d8269f5e4c438c7de631",
-  "approvedAt": "2026-11-16T04:14:37.729Z",
+  "version": "1.2.0",
+  "sha256": "2a2be072b360e068a1b025b02631328941e6e16c3d7d42e612f7031b08612ad1",
+  "approvedAt": "2026-11-24T15:56:19.704Z",
   "neobase": ">=4.0.0",
-  "signature": "A56E/YzDGs2R/P+GlSGfGalzBeajm0AWd2wSGi0tz2YzWBU6/pL8tm1jpamJSA+rukJWEhaCv71sXzfCscDjAQ=="
+  "signature": "8lPXTry99h7TIbFIwUl6MN/nf7+zyMuNy2YyVntfzfFkugdPHYEjCrUycPfunlH0oIkpDlOfK9PennzxYReLDw=="
 }
